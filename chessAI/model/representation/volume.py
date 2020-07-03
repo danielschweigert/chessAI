@@ -60,3 +60,27 @@ class VolumeRepresentation:
         _vector[piece_index[piece_str.lower()]] = 1
 
         return _vector
+
+    @staticmethod
+    def board_to_volume(board):
+        """
+        Returns a 3d volume representation of the chess board with the 3rd dimension representing the piece at the
+        respective 2d coordinates.
+
+        Args:
+            board (chess.Board):                A situation on the chess board
+
+        Returns:
+            numpay.array                        (8, 8, 7) array representation
+
+        """
+        
+        volume = np.zeros(shape=(8, 8, 7))
+        piece_map = board.piece_map()
+
+        for position_index, piece in piece_map.items():
+            x, y = VolumeRepresentation.position_index_to_coordinate(position_index)
+            piece_vector = VolumeRepresentation.piece_to_vector(piece)
+            volume[x][y][:] = piece_vector
+
+        return volume

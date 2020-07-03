@@ -42,3 +42,66 @@ class PositionIndexToCoordinateTest(unittest.TestCase):
 
         for piece, vector in correct_mappings.items():
             self.assertEqual(list(vector), list(VolumeRepresentation.piece_to_vector(piece)))
+
+    def test_board_to_volume(self):
+
+        correct_mappings = list()
+
+        volume_1 = np.zeros(shape=(8, 8, 7))
+        board_1 = chess.Board()
+        board_1.clear_board()
+        correct_mappings.append((board_1, volume_1))
+
+        volume_2 = np.zeros(shape=(8, 8, 7))
+        board_2 = chess.Board()
+        board_2.clear_board()
+        board_2.set_piece_at(square=59, piece=chess.Piece.from_symbol('k'))
+        volume_2[3][7] = [1, 1, 0, 0, 0, 0, 0]
+        board_2.set_piece_at(square=3, piece=chess.Piece.from_symbol('K'))
+        volume_2[3][0] = [0, 1, 0, 0, 0, 0, 0]
+        correct_mappings.append((board_2, volume_2))
+
+        volume_3 = np.zeros(shape=(8, 8, 7))
+        board_3 = chess.Board()
+        volume_3[7][7] = [1, 0, 0, 1, 0, 0, 0]
+        volume_3[6][7] = [1, 0, 0, 0, 0, 1, 0]
+        volume_3[5][7] = [1, 0, 0, 0, 1, 0, 0]
+        volume_3[4][7] = [1, 1, 0, 0, 0, 0, 0]
+        volume_3[3][7] = [1, 0, 1, 0, 0, 0, 0]
+        volume_3[2][7] = [1, 0, 0, 0, 1, 0, 0]
+        volume_3[1][7] = [1, 0, 0, 0, 0, 1, 0]
+        volume_3[0][7] = [1, 0, 0, 1, 0, 0, 0]
+        volume_3[7][6] = [1, 0, 0, 0, 0, 0, 1]
+        volume_3[6][6] = [1, 0, 0, 0, 0, 0, 1]
+        volume_3[5][6] = [1, 0, 0, 0, 0, 0, 1]
+        volume_3[4][6] = [1, 0, 0, 0, 0, 0, 1]
+        volume_3[3][6] = [1, 0, 0, 0, 0, 0, 1]
+        volume_3[2][6] = [1, 0, 0, 0, 0, 0, 1]
+        volume_3[1][6] = [1, 0, 0, 0, 0, 0, 1]
+        volume_3[0][6] = [1, 0, 0, 0, 0, 0, 1]
+        volume_3[7][0] = [0, 0, 0, 1, 0, 0, 0]
+        volume_3[6][0] = [0, 0, 0, 0, 0, 1, 0]
+        volume_3[5][0] = [0, 0, 0, 0, 1, 0, 0]
+        volume_3[4][0] = [0, 1, 0, 0, 0, 0, 0]
+        volume_3[3][0] = [0, 0, 1, 0, 0, 0, 0]
+        volume_3[2][0] = [0, 0, 0, 0, 1, 0, 0]
+        volume_3[1][0] = [0, 0, 0, 0, 0, 1, 0]
+        volume_3[0][0] = [0, 0, 0, 1, 0, 0, 0]
+        volume_3[7][1] = [0, 0, 0, 0, 0, 0, 1]
+        volume_3[6][1] = [0, 0, 0, 0, 0, 0, 1]
+        volume_3[5][1] = [0, 0, 0, 0, 0, 0, 1]
+        volume_3[4][1] = [0, 0, 0, 0, 0, 0, 1]
+        volume_3[3][1] = [0, 0, 0, 0, 0, 0, 1]
+        volume_3[2][1] = [0, 0, 0, 0, 0, 0, 1]
+        volume_3[1][1] = [0, 0, 0, 0, 0, 0, 1]
+        volume_3[0][1] = [0, 0, 0, 0, 0, 0, 1]
+
+        correct_mappings.append((board_3, volume_3))
+
+        for board, volume in correct_mappings:
+            v = VolumeRepresentation.board_to_volume(board)
+            self.assertEqual(v.shape, (8, 8, 7))
+            for i in range(v.shape[0]):
+                for j in range(v.shape[1]):
+                    for k in range(v.shape[2]):
+                        self.assertEqual(volume[i][j][k], v[i][j][k])
