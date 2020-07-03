@@ -1,4 +1,6 @@
 import unittest
+import numpy as np
+import chess
 
 from chessAI.model.representation.volume import VolumeRepresentation
 
@@ -20,3 +22,23 @@ class PositionIndexToCoordinateTest(unittest.TestCase):
 
         for index, x_y in correct_mappings.items():
             self.assertEqual(x_y, VolumeRepresentation.position_index_to_coordinate(index))
+
+    def test_piece_to_vector(self):
+
+        correct_mappings = {
+            chess.Piece.from_symbol('k'): np.array([1, 1, 0, 0, 0, 0, 0]),
+            chess.Piece.from_symbol('q'): np.array([1, 0, 1, 0, 0, 0, 0]),
+            chess.Piece.from_symbol('r'): np.array([1, 0, 0, 1, 0, 0, 0]),
+            chess.Piece.from_symbol('b'): np.array([1, 0, 0, 0, 1, 0, 0]),
+            chess.Piece.from_symbol('n'): np.array([1, 0, 0, 0, 0, 1, 0]),
+            chess.Piece.from_symbol('p'): np.array([1, 0, 0, 0, 0, 0, 1]),
+            chess.Piece.from_symbol('K'): np.array([0, 1, 0, 0, 0, 0, 0]),
+            chess.Piece.from_symbol('Q'): np.array([0, 0, 1, 0, 0, 0, 0]),
+            chess.Piece.from_symbol('R'): np.array([0, 0, 0, 1, 0, 0, 0]),
+            chess.Piece.from_symbol('B'): np.array([0, 0, 0, 0, 1, 0, 0]),
+            chess.Piece.from_symbol('N'): np.array([0, 0, 0, 0, 0, 1, 0]),
+            chess.Piece.from_symbol('P'): np.array([0, 0, 0, 0, 0, 0, 1]),
+        }
+
+        for piece, vector in correct_mappings.items():
+            self.assertEqual(list(vector), list(VolumeRepresentation.piece_to_vector(piece)))
