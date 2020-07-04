@@ -1,6 +1,6 @@
 import chess
 import numpy as np
-
+import torch
 
 class VolumeRepresentation:
 
@@ -74,7 +74,7 @@ class VolumeRepresentation:
             numpay.array                        (8, 8, 7) array representation
 
         """
-        
+
         volume = np.zeros(shape=(8, 8, 7))
         piece_map = board.piece_map()
 
@@ -84,3 +84,14 @@ class VolumeRepresentation:
             volume[x][y][:] = piece_vector
 
         return volume
+
+    @classmethod
+    def from_board(cls, board):
+        vr = cls()
+        vr.volume = VolumeRepresentation.board_to_volume(board)
+        return vr
+
+    def get_tensor(self):
+        data = self.volume
+        data = np.expand_dims(data, axis=(0, 1))
+        return torch.tensor(data).float()
