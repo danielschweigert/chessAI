@@ -17,4 +17,3 @@ class Player:
             'resigned': False
         }
         return result
-
