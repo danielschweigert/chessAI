@@ -1,3 +1,6 @@
+import copy
+
+
 class Reason:
     """
     Reasons how games end.
@@ -79,12 +82,60 @@ class Game:
 
             n_half_moves += 1
 
-        self.player_1.close()
-        self.player_2.close()
-
         game_result = {
             'score': score,
             'reason': reason,
             'nth_move': (n_half_moves + 1) // 2
         }
         return game_result
+
+
+class Series:
+    """
+    Sets up and executes a series of games of n_rounds for each of the boards in initial_boards and reports the results.
+    """
+
+    def __init__(self, player_1, player_2, initial_boards, n_rounds=100):
+        self.player_1 = player_1
+        self.player_2 = player_2
+        self.initial_boards = initial_boards
+        self.n_rounds = n_rounds
+
+    def run(self):
+
+        result = {
+            'rounds_completed': 0,
+            'score': 0,
+            'n_wins': 0,
+            'n_draws': 0,
+            'reasons': {
+                Reason.RESIGNATION: 0,
+                Reason.CHECKMATE: 0,
+                Reason.FIFTY_MOVES_ROLE: 0,
+                Reason.THREE_FOLD_REPETITION: 0,
+                Reason.INSUFFICIENT_MATERIAL: 0,
+                Reason.STALEMATE: 0
+            }
+
+        }
+
+        for initial_board in self.initial_boards:
+            for i in range(self.n_rounds):
+
+                _board = copy.deepcopy(initial_board)
+
+                game = Game(player_1=self.player_1,
+                            player_2=self.player_2,
+                            initial_board=_board)
+
+                game_result = game.run()
+
+                result['rounds_completed'] += 1
+                if game_result['score'] == 1:
+                    result['n_wins'] += 1
+                if game_result['score'] == 0.5:
+                    result['n_draws'] += 1
+                result['score'] += game_result['score']
+                result['reasons'][game_result['reason']] += 1
+
+        return result
