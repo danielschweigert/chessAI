@@ -1,4 +1,19 @@
+class Reason:
+    """
+    Reasons how games end.
+    """
+    RESIGNATION = 'resignation'
+    CHECKMATE = 'checkmate'
+    STALEMATE = 'stalemate'
+    INSUFFICIENT_MATERIAL = 'insufficient material'
+    THREE_FOLD_REPETITION = '3-fold repetition'
+    FIFTY_MOVES_ROLE = '50 moves rule'
+
+
 class Game:
+    """
+    Sets up and conducts a full game between 2 players and reports the result.
+    """
 
     def __init__(self, player_1, player_2, initial_board):
         self.player_1 = player_1
@@ -13,32 +28,32 @@ class Game:
         if play_result['resigned']:
             game_over = True
             score = int(current_player == self.player_2)
-            reason = 'resignation'
+            reason = Reason.RESIGNATION
 
         if self.board.is_checkmate():
             game_over = True
             score = int(current_player == self.player_1)
-            reason = 'checkmate'
+            reason = Reason.CHECKMATE
 
         if self.board.is_stalemate():
             game_over = True
             score = 0.5
-            reason = 'stalemate'
+            reason = Reason.STALEMATE
 
         if self.board.is_insufficient_material():
             game_over = True
             score = 0.5
-            reason = 'insufficient material'
+            reason = Reason.INSUFFICIENT_MATERIAL
 
         if self.board.can_claim_threefold_repetition():
             game_over = True
             score = 0.5
-            reason = '3-fold repetition'
+            reason = Reason.THREE_FOLD_REPETITION
 
         if self.board.can_claim_fifty_moves():
             game_over = True
             score = 0.5
-            reason = '50 moves rule'
+            reason = Reason.FIFTY_MOVES_ROLE
 
         return game_over, score, reason
 
@@ -53,9 +68,7 @@ class Game:
 
             play_result = player_to_move.play(self.board)
             move = play_result['move']
-            print(move)
             self.board.push(move)
-            print(self.board)
 
             game_over, score, reason = self.is_game_over(current_player=player_to_move, play_result=play_result)
 
