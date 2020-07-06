@@ -1,5 +1,6 @@
 import unittest
 import chess
+import torch
 from chessAI.model.representation.volume import VolumeRepresentation
 from chessAI.model.evaluation.cnn.simpleCNNEvaluation import SimpleCNNEvaluator
 
@@ -13,3 +14,11 @@ class SimpleCNNEvaluatorTest(unittest.TestCase):
         sce = SimpleCNNEvaluator()
         score = sce.evaluate(volume_representation)
         self.assertIsInstance(score, float)
+
+    def test_get_set_parameters(self):
+        sce = SimpleCNNEvaluator()
+        parameters = sce.get_parameters()
+        n_parameters = parameters.shape[0]
+        new_vector = torch.arange(n_parameters)
+        sce.set_parameters(new_vector)
+        self.assertEqual(list(new_vector.detach().numpy()), list(sce.get_parameters().detach().numpy()))

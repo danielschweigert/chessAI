@@ -8,6 +8,7 @@ class SimpleCNNEvaluator(BaseEvaluator):
     """
 
     def __init__(self):
+        super(SimpleCNNEvaluator, self).__init__()
         self.conv_1 = self._conv_layer_set(1, 2)
         self.fc_1 = nn.Linear(54, 1)
         self.relu_1 = nn.LeakyReLU()
