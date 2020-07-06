@@ -69,7 +69,8 @@ class Game:
         n_half_moves = 0
         while True:
 
-            play_result = player_to_move.play(self.board)
+            side = int(not self.board.turn)
+            play_result = player_to_move.play(self.board, side=side)
             move = play_result['move']
             self.board.push(move)
 

@@ -8,7 +8,7 @@ class EnginePlayer:
         self.engine = chess.engine.SimpleEngine.popen_uci(engine_path, timeout=10)
         self.time_limit = time_limit
 
-    def play(self, board):
+    def play(self, board, **kwargs):
         play_result = self.engine.play(board, chess.engine.Limit(time=self.time_limit))
         result = {
             'move': play_result.move,

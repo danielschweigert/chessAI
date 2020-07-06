@@ -29,7 +29,6 @@ class GameTest(unittest.TestCase):
         self.assertIn(result['score'], (0, 0.5, 1))
         self.assertIsNotNone(result['reason'])
         self.assertIsInstance(result['nth_move'], int)
-
         player_1.close()
         player_2.close()
 
