@@ -4,7 +4,7 @@ from .base import BaseEvaluator
 
 class RandomEvaluator(BaseEvaluator):
     """
-    Gives a random score regardless of the situation on the board.
+    Gives a campaign score regardless of the situation on the board.
     """
 
     def evaluate(self, volume_representation):

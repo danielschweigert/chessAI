@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 from torch.nn.utils import parameters_to_vector, vector_to_parameters
 
@@ -15,7 +16,9 @@ class BaseEvaluator(nn.Module):
 
     def get_parameters(self):
         vec = parameters_to_vector(self.parameters())
+        vec = vec.detach().numpy()
         return vec
 
     def set_parameters(self, vec):
+        vec = torch.tensor(vec, dtype=torch.float32)
         vector_to_parameters(vec, self.parameters())

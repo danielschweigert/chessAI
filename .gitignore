@@ -134,3 +134,6 @@ dmypy.json
 
 # local chess engine
 chessAI/stockfish-11-mac/
+
+# local data path
+chessAI/data/
