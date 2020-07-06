@@ -1,3 +1,7 @@
 config = {
-    'uci_engine_path': ''
+
+    'test': {
+        'uci_engine_path': ''
+    }
+
 }

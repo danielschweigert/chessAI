@@ -1,4 +1,5 @@
 import copy
+
 from chessAI.model.representation.volume import VolumeRepresentation
 from .base import Player
 

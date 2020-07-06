@@ -5,3 +5,15 @@ class Player:
 
     def get_highest_ranked_move(self, board, side=0):
         raise NotImplementedError()
+
+    def close(self):
+        pass
+
+    def play(self, board, side=0):
+        highest_ranked_move, _ = self.get_highest_ranked_move(board, side)
+        result = {
+            'move': highest_ranked_move,
+            'resigned': False
+        }
+        return result
+
