@@ -106,9 +106,18 @@ class Series:
 
         result = {
             'rounds_completed': 0,
-            'score': 0,
-            'n_wins': 0,
-            'n_draws': 0,
+            'scores': {
+                'player_1': {
+                    'total': 0,
+                    'n_wins': 0,
+                    'n_draws': 0,
+                },
+                'player_2': {
+                    'total': 0,
+                    'n_wins': 0,
+                    'n_draws': 0,
+                }
+            },
             'reasons': {
                 Reason.RESIGNATION: 0,
                 Reason.CHECKMATE: 0,
@@ -117,7 +126,6 @@ class Series:
                 Reason.INSUFFICIENT_MATERIAL: 0,
                 Reason.STALEMATE: 0
             }
-
         }
 
         for initial_board in self.initial_boards:
@@ -133,10 +141,18 @@ class Series:
 
                 result['rounds_completed'] += 1
                 if game_result['score'] == 1:
-                    result['n_wins'] += 1
+                    result['scores']['player_1']['n_wins'] += 1
+                    result['scores']['player_1']['total'] += 1
+                    result['scores']['player_2']['total'] -= 1
                 if game_result['score'] == 0.5:
-                    result['n_draws'] += 1
-                result['score'] += game_result['score']
+                    result['scores']['player_1']['n_draws'] += 1
+                    result['scores']['player_2']['n_draws'] += 1
+                    result['scores']['player_1']['total'] += 0.5
+                    result['scores']['player_2']['total'] += 0.5
+                if game_result['score'] == 0:
+                    result['scores']['player_2']['n_wins'] += 1
+                    result['scores']['player_1']['total'] -= 1
+                    result['scores']['player_2']['total'] += 1
                 result['reasons'][game_result['reason']] += 1
 
         return result

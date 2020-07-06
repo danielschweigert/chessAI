@@ -53,10 +53,13 @@ class SeriesTest(unittest.TestCase):
 
         result = series.run()
         self.assertEqual(n_rounds * len(initial_boards), result['rounds_completed'])
-        self.assertIsInstance(result['score'], int)
-        self.assertIsInstance(result['n_wins'], int)
-        self.assertIsInstance(result['n_draws'], int)
         self.assertIsInstance(result['reasons'], dict)
+        self.assertIsInstance(result['scores'], dict)
+
+        null_sum = result['scores']['player_1']['total'] \
+                   + result['scores']['player_2']['total'] \
+                   - result['scores']['player_1']['n_draws'] * 0.5
+        self.assertEqual(0, null_sum)
 
         player_1.close()
         player_2.close()
