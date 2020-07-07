@@ -1,6 +1,7 @@
 from chessAI.game.game import Series
 from chessAI.model.evolution.random_walk import RandomWalkEvolver
 from chessAI.game.engine import EnginePlayer
+import yaml
 
 
 class RandomWalkTrainingCampaign:
@@ -78,3 +79,12 @@ class RandomWalkTrainingCampaign:
                                                    self.n_rounds_series)
 
         return highest_score, best_params
+
+    @classmethod
+    def from_training_schedule(cls, training_schedule_file_path):
+
+        with open(training_schedule_file_path) as f:
+            schedule = yaml.load(f.read())
+
+        print(schedule)
+
