@@ -21,4 +21,4 @@ class SimpleCNNEvaluatorTest(unittest.TestCase):
         n_parameters = parameters.shape[0]
         new_vector = torch.arange(n_parameters)
         sce.set_parameters(new_vector)
-        self.assertEqual(list(new_vector.detach().numpy()), list(sce.get_parameters().detach().numpy()))
+        self.assertEqual(list(new_vector), list(sce.get_parameters()))
