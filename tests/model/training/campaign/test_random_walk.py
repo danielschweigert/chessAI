@@ -1,7 +1,7 @@
 import unittest
 import chess
 import os
-from chessAI.model.training.campaign.random import RandomWalkTrainingCampaign
+from chessAI.model.training.campaign.random_walk import RandomWalkTrainingCampaign
 from chessAI.model.evaluation.fcn.simpleFCNEvaluation import SimpleFCNEvaluator
 from chessAI.model.evaluation.cnn.simpleCNNEvaluation import SimpleCNNEvaluator
 from chessAI.model.play.shallow import ShallowPlayer
@@ -19,8 +19,7 @@ class RandomWalkTrainingCampaignTest(unittest.TestCase):
         n_parameters = len(evaluator.get_parameters())
         engine_player_path = config['test']['uci_engine_path']
         engine_player_time_limit = 0.1
-        data_file_logger = DataFileLogger(config['test']['data_file_logger_path'], n_parameters=n_parameters,
-                                          append=True)
+        data_file_logger = DataFileLogger(config['test']['data_file_logger_path'], append=True)
 
         initial_board = chess.Board()
         initial_board.clear_board()
@@ -52,8 +51,7 @@ class RandomWalkTrainingCampaignTest(unittest.TestCase):
         n_parameters = len(evaluator.get_parameters())
         engine_player_path = config['test']['uci_engine_path']
         engine_player_time_limit = 0.1
-        data_file_logger = DataFileLogger(config['test']['data_file_logger_path'], n_parameters=n_parameters,
-                                          append=True)
+        data_file_logger = DataFileLogger(config['test']['data_file_logger_path'], append=True)
 
         initial_board = chess.Board()
         initial_board.clear_board()
