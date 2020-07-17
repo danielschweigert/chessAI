@@ -3,7 +3,7 @@ import chess
 
 from chessAI.model.evaluation.cnn.simpleCNNEvaluation import SimpleCNNEvaluator
 from config import config
-from chessAI.game.engine import EnginePlayer
+from chessAI.model.play.engine import EnginePlayer
 from chessAI.model.play.shallow import ShallowPlayer
 from chessAI.game.game import Game, Series
 

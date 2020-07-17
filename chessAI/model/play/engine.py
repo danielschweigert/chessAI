@@ -1,8 +1,10 @@
+import numpy as np
 import chess
 import chess.engine
+from chessAI.model.play.base import Player
 
 
-class EnginePlayer:
+class EnginePlayer(Player):
 
     def __init__(self, engine_path, time_limit):
         self.engine = chess.engine.SimpleEngine.popen_uci(engine_path, timeout=10)
@@ -18,3 +20,18 @@ class EnginePlayer:
 
     def close(self):
         self.engine.quit()
+
+
+class RandomPlayer(Player):
+
+    def play(self, board, **kwargs):
+        legal_moves = list(board.legal_moves)
+        random_move = np.random.choice(legal_moves, 1)
+        result = {
+            'move': random_move,
+            'resigned': False
+        }
+        return result
+
+    def close(self):
+        pass

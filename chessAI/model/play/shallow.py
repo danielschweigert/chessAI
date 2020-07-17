@@ -1,10 +1,10 @@
 import copy
 
 from chessAI.model.representation.volume import VolumeRepresentation
-from .base import Player
+from .base import ModelPlayer
 
 
-class ShallowPlayer(Player):
+class ShallowPlayer(ModelPlayer):
     """
     Evaluates the best move by evaluating all possible legal moves and returning the one resulting in a board with the
     highest evaluation score.

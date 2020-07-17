@@ -1,4 +1,5 @@
 from chessAI.model.play.shallow import ShallowPlayer
+from chessAI.model.play.engine import RandomPlayer
 from chessAI.util.error import MissingParameterError
 from chessAI.model.evaluation.factory import EvaluatorFactory
 
@@ -12,6 +13,11 @@ class PlayerFactory:
             raise MissingParameterError('class')
 
         player_class_name = parameters['class']
+
+        if player_class_name == RandomPlayer.__name__:
+
+            rp = RandomPlayer()
+            return rp
 
         if player_class_name == ShallowPlayer.__name__:
 
