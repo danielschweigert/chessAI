@@ -1,4 +1,5 @@
 import copy
+import chess
 
 
 class Reason:
@@ -96,10 +97,10 @@ class Series:
     Sets up and executes a series of games of n_rounds for each of the boards in initial_boards and reports the results.
     """
 
-    def __init__(self, player_1, player_2, initial_boards, n_rounds=100):
+    def __init__(self, player_1, player_2, initial_board_fens, n_rounds=100):
         self.player_1 = player_1
         self.player_2 = player_2
-        self.initial_boards = initial_boards
+        self.initial_board_fens = initial_board_fens
         self.n_rounds = n_rounds
 
     def run(self):
@@ -128,7 +129,10 @@ class Series:
             }
         }
 
-        for initial_board in self.initial_boards:
+        for initial_board_fen in self.initial_board_fens:
+
+            initial_board = chess.Board(initial_board_fen)
+
             for i in range(self.n_rounds):
 
                 _board = copy.deepcopy(initial_board)

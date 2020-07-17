@@ -26,7 +26,7 @@ class RandomPlayer(Player):
 
     def play(self, board, **kwargs):
         legal_moves = list(board.legal_moves)
-        random_move = np.random.choice(legal_moves, 1)
+        random_move = np.random.choice(legal_moves, 1)[0]
         result = {
             'move': random_move,
             'resigned': False

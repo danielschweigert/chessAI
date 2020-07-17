@@ -1,5 +1,5 @@
 from chessAI.model.play.shallow import ShallowPlayer
-from chessAI.model.play.engine import RandomPlayer
+from chessAI.model.play.engine import RandomPlayer, EnginePlayer
 from chessAI.util.error import MissingParameterError
 from chessAI.model.evaluation.factory import EvaluatorFactory
 
@@ -18,6 +18,19 @@ class PlayerFactory:
 
             rp = RandomPlayer()
             return rp
+
+        if player_class_name == EnginePlayer.__name__:
+
+            engine_path = parameters['engine_path']
+
+            # random player if no path to engine provided
+            if engine_path == '':
+                rp = RandomPlayer()
+                return rp
+
+            time_limit = parameters['time_limit']
+            ep = EnginePlayer(engine_path, time_limit)
+            return ep
 
         if player_class_name == ShallowPlayer.__name__:
 

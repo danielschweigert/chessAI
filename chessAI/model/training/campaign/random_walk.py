@@ -15,13 +15,13 @@ class RandomWalkTrainingCampaign:
                  n_iterations_training,
                  random_walk_n_subset,
                  max_abs_rel_change,
-                 initial_boards,
+                 initial_board_fens,
                  kwargs
                  ):
 
         self.model_player = model_player
         self.engine_player = engine_player
-        self.initial_boards = initial_boards
+        self.initial_board_fens = initial_board_fens
         self.n_rounds_series = n_rounds_series
         self.n_iterations_training = n_iterations_training
         self.side = side
@@ -31,34 +31,34 @@ class RandomWalkTrainingCampaign:
                                                      max_abs_rel_change=random_walk_max_abs_rel_change)
         self.data_loggers = kwargs.get('data_loggers', [])
 
-    def _new_series(self, player, engine_player, side, initial_boards, n_rounds_series):
+    def _new_series(self, model_player, engine_player, side, initial_board_fens, n_rounds_series):
         if side == 0:
-            player_1 = player
+            player_1 = model_player
             player_2 = engine_player
             player_name = 'player_1'
         else:
             player_1 = engine_player
-            player_2 = self.player
+            player_2 = self.model_player
             player_name = 'player_2'
 
         series = Series(player_1=player_1,
                         player_2=player_2,
-                        initial_boards=initial_boards,
+                        initial_board_fens=initial_board_fens,
                         n_rounds=n_rounds_series)
         return series, player_name
 
     def run(self):
 
         previous_score = None
-        previous_params = self.player.evaluator.get_parameters()
+        previous_params = self.model_player.evaluator.get_parameters()
 
         highest_score = None
         best_params = None
 
-        series, player_name = self._new_series(player=self.player,
+        series, player_name = self._new_series(model_player=self.model_player,
                                                engine_player=self.engine_player,
                                                side=self.side,
-                                               initial_boards=self.initial_boards,
+                                               initial_board_fens=self.initial_board_fens,
                                                n_rounds_series=self.n_rounds_series)
 
         for i in range(self.n_iterations_training):
@@ -66,24 +66,24 @@ class RandomWalkTrainingCampaign:
             score = series_result['scores'][player_name]['total']
 
             for data_loger in self.data_loggers:
-                data_loger.log(score, self.player.evaluator.get_parameters())
+                data_loger.log(score, self.model_player.evaluator.get_parameters())
 
             if highest_score is None or score > highest_score:
                 highest_score = score
-                best_params = self.player.evaluator.get_parameters()
+                best_params = self.model_player.evaluator.get_parameters()
 
             if previous_score is not None and score < previous_score:
-                self.player.evaluator.set_parameters(previous_params)
+                self.model_player.evaluator.set_parameters(previous_params)
 
             previous_score = score
-            previous_params = self.player.evaluator.get_parameters()
+            previous_params = self.model_player.evaluator.get_parameters()
 
-            new_params = self.random_walk_evolver.evolve(self.player.evaluator.get_parameters())
-            self.player.evaluator.set_parameters(new_params)
-            series, player_name = self._new_series(self.player,
+            new_params = self.random_walk_evolver.evolve(self.model_player.evaluator.get_parameters())
+            self.model_player.evaluator.set_parameters(new_params)
+            series, player_name = self._new_series(self.model_player,
                                                    self.engine_player,
                                                    self.side,
-                                                   self.initial_boards,
+                                                   self.initial_board_fens,
                                                    self.n_rounds_series)
 
         return highest_score, best_params
@@ -102,7 +102,7 @@ class RandomWalkTrainingCampaign:
         n_iterations_training = schedule['n_iterations_training']
         random_walk_n_subset = schedule['random_walk_n_subset']
         max_abs_rel_change = schedule['max_abs_rel_change']
-        initial_boards = schedule['initial_boards']
+        initial_board_fens = schedule['initial_board_fens']
 
         data_logger_params = schedule['logger']
         data_loggers = DataLogger.create_data_logger(data_logger_params)
@@ -114,7 +114,7 @@ class RandomWalkTrainingCampaign:
                    n_iterations_training=n_iterations_training,
                    random_walk_n_subset=random_walk_n_subset,
                    max_abs_rel_change=max_abs_rel_change,
-                   initial_boards=initial_boards,
+                   initial_board_fens=initial_board_fens,
                    kwargs={'data_loggers': data_loggers}
                    )
 

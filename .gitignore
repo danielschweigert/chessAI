@@ -137,3 +137,6 @@ chessAI/stockfish-11-mac/
 
 # local data path
 chessAI/data/
+
+# personal project notes
+notes.txt

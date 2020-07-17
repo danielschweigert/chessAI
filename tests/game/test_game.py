@@ -6,6 +6,7 @@ from config import config
 from chessAI.model.play.engine import EnginePlayer
 from chessAI.model.play.shallow import ShallowPlayer
 from chessAI.game.game import Game, Series
+from chessAI.model.play.factory import PlayerFactory
 
 
 class GameTest(unittest.TestCase):
@@ -13,7 +14,12 @@ class GameTest(unittest.TestCase):
     def test_engine_vs_model_game(self):
 
         engine_path = config['test']['uci_engine_path']
-        player_1 = EnginePlayer(engine_path, time_limit=0.1)
+        player_1 = PlayerFactory.create_player({
+            'class': 'EnginePlayer',
+            'engine_path': engine_path,
+            'time_limit': 0.1
+
+        })
 
         evaluator = SimpleCNNEvaluator()
         player_2 = ShallowPlayer(evaluator)
@@ -38,27 +44,33 @@ class SeriesTest(unittest.TestCase):
     def test_series(self):
 
         engine_path = config['test']['uci_engine_path']
-        player_1 = EnginePlayer(engine_path, time_limit=0.1)
+        player_1 = PlayerFactory.create_player({
+            'class': 'EnginePlayer',
+            'engine_path': engine_path,
+            'time_limit': 0.1
+
+        })
 
         evaluator = SimpleCNNEvaluator()
         player_2 = ShallowPlayer(evaluator)
 
-        initial_boards = [chess.Board()]
-        n_rounds = 10
+        initial_board_fens = [chess.Board().fen()]
+        n_rounds = 5
 
         series = Series(player_1=player_1,
                         player_2=player_2,
-                        initial_boards=initial_boards,
+                        initial_board_fens=initial_board_fens,
                         n_rounds=n_rounds)
 
         result = series.run()
-        self.assertEqual(n_rounds * len(initial_boards), result['rounds_completed'])
+        self.assertEqual(n_rounds * len(initial_board_fens), result['rounds_completed'])
         self.assertIsInstance(result['reasons'], dict)
         self.assertIsInstance(result['scores'], dict)
 
         null_sum = result['scores']['player_1']['total'] \
                    + result['scores']['player_2']['total'] \
-                   - result['scores']['player_1']['n_draws'] * 0.5
+                   - result['scores']['player_1']['n_draws'] * 0.5 \
+                   - result['scores']['player_2']['n_draws'] * 0.5
         self.assertEqual(0, null_sum)
 
         player_1.close()
