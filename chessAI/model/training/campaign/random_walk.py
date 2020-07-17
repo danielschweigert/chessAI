@@ -1,25 +1,35 @@
 from chessAI.game.game import Series
 from chessAI.model.evolution.random_walk import RandomWalkEvolver
-from chessAI.game.engine import EnginePlayer
-import yaml
+from chessAI.model.play.engine import EnginePlayer
+from chessAI.model.play.factory import PlayerFactory
+from chessAI.util.logging import DataLogger
 
 
 class RandomWalkTrainingCampaign:
 
-    def __init__(self, player, engine_player_path, engine_player_time_limit, initial_boards, **kwargs):
+    def __init__(self,
+                 model_player,
+                 engine_player,
+                 side,
+                 n_rounds_series,
+                 n_iterations_training,
+                 random_walk_n_subset,
+                 max_abs_rel_change,
+                 initial_boards,
+                 kwargs
+                 ):
 
-        self.player = player
-        self.engine_player = EnginePlayer(engine_path=engine_player_path, time_limit=engine_player_time_limit)
+        self.model_player = model_player
+        self.engine_player = engine_player
         self.initial_boards = initial_boards
-        self.n_rounds_series = kwargs.get('n_rounds_series', 100)
-        self.n_iterations_training = kwargs.get('n_iterations_training', 50)
-        self.side = kwargs.get('side', 0)
-        self.data_loggers = kwargs.get('data_loggers', [])
-
-        random_walk_n_subset = kwargs.get('random_walk_n_subset', 1)
-        random_walk_max_abs_rel_change = kwargs.get('max_abs_rel_change', 0.05)
+        self.n_rounds_series = n_rounds_series
+        self.n_iterations_training = n_iterations_training
+        self.side = side
+        random_walk_n_subset = random_walk_n_subset
+        random_walk_max_abs_rel_change = max_abs_rel_change
         self.random_walk_evolver = RandomWalkEvolver(n_subset=random_walk_n_subset,
                                                      max_abs_rel_change=random_walk_max_abs_rel_change)
+        self.data_loggers = kwargs.get('data_loggers', [])
 
     def _new_series(self, player, engine_player, side, initial_boards, n_rounds_series):
         if side == 0:
@@ -52,11 +62,9 @@ class RandomWalkTrainingCampaign:
                                                n_rounds_series=self.n_rounds_series)
 
         for i in range(self.n_iterations_training):
-            print(i)
             series_result = series.run()
             score = series_result['scores'][player_name]['total']
 
-            print(i, score, self.player.evaluator.get_parameters())
             for data_loger in self.data_loggers:
                 data_loger.log(score, self.player.evaluator.get_parameters())
 
@@ -81,10 +89,33 @@ class RandomWalkTrainingCampaign:
         return highest_score, best_params
 
     @classmethod
-    def from_training_schedule(cls, training_schedule_file_path):
+    def from_schedule(cls, schedule):
 
-        with open(training_schedule_file_path) as f:
-            schedule = yaml.load(f.read())
+        player_parameters = schedule['player']
+        model_player = PlayerFactory.create_player(player_parameters)
 
-        print(schedule)
+        engine_parameters = schedule['engine_player']
+        engine_player = PlayerFactory.create_player(engine_parameters)
 
+        side = schedule['side']
+        n_rounds_series = schedule['n_rounds_series']
+        n_iterations_training = schedule['n_iterations_training']
+        random_walk_n_subset = schedule['random_walk_n_subset']
+        max_abs_rel_change = schedule['max_abs_rel_change']
+        initial_boards = schedule['initial_boards']
+
+        data_logger_params = schedule['logger']
+        data_loggers = DataLogger.create_data_logger(data_logger_params)
+
+        rwtc = cls(model_player=model_player,
+                   engine_player=engine_player,
+                   side=side,
+                   n_rounds_series=n_rounds_series,
+                   n_iterations_training=n_iterations_training,
+                   random_walk_n_subset=random_walk_n_subset,
+                   max_abs_rel_change=max_abs_rel_change,
+                   initial_boards=initial_boards,
+                   kwargs={'data_loggers': data_loggers}
+                   )
+
+        return rwtc

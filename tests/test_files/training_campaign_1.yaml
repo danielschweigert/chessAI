@@ -1,0 +1,18 @@
+class: RandomWalkTrainingCampaign
+player:
+  class: ShallowPlayer
+  evaluator:
+    class: SimpleFCNEvaluator
+engine_player:
+  class: RandomPlayer
+random_walk_n_subset: 500
+max_abs_rel_change: 0.1
+n_rounds_series: 5
+n_iterations_training: 50
+side: 0
+initial_boards:
+  - '8/8/8/7q/2K2kqq/8/8/8 w - - 0 1'
+logger:
+  - class: DataFileLogger
+    data_file_path: '/data/chessAI/training/my_random_walk_example.csv'
+    append: True

@@ -6,7 +6,6 @@ from chessAI.model.evaluation.fcn.simpleFCNEvaluation import SimpleFCNEvaluator
 from chessAI.model.evaluation.cnn.simpleCNNEvaluation import SimpleCNNEvaluator
 from chessAI.model.play.shallow import ShallowPlayer
 from chessAI.util.logging import DataFileLogger
-from tests import TEST_PATH
 from config import config
 
 
@@ -75,7 +74,3 @@ class RandomWalkTrainingCampaignTest(unittest.TestCase):
         rwtc.engine_player.close()
         self.assertIsInstance(score, float)
         self.assertEqual(n_parameters, len(parameters))
-
-    def test_schedule_loading(self):
-        schedule_file_path = os.path.join(TEST_PATH, 'test_files', 'training_campaign_1.yaml')
-        rwtc = RandomWalkTrainingCampaign.from_training_schedule(schedule_file_path)
