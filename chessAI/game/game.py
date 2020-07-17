@@ -142,8 +142,8 @@ class Series:
                 result['rounds_completed'] += 1
                 if game_result['score'] == 1:
                     result['scores']['player_1']['n_wins'] += 1
-                    result['scores']['player_1']['total'] += 1
-                    result['scores']['player_2']['total'] -= 1
+                    result['scores']['player_1']['total'] += 1.0
+                    result['scores']['player_2']['total'] -= 1.0
                 if game_result['score'] == 0.5:
                     result['scores']['player_1']['n_draws'] += 1
                     result['scores']['player_2']['n_draws'] += 1
@@ -151,8 +151,8 @@ class Series:
                     result['scores']['player_2']['total'] += 0.5
                 if game_result['score'] == 0:
                     result['scores']['player_2']['n_wins'] += 1
-                    result['scores']['player_1']['total'] -= 1
-                    result['scores']['player_2']['total'] += 1
+                    result['scores']['player_1']['total'] -= 1.0
+                    result['scores']['player_2']['total'] += 1.0
                 result['reasons'][game_result['reason']] += 1
 
         return result
