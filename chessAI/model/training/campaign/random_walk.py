@@ -2,7 +2,7 @@ from chessAI.game.game import Series
 from chessAI.model.evolution.random_walk import RandomWalkEvolver
 from chessAI.model.play.engine import EnginePlayer
 from chessAI.model.play.factory import PlayerFactory
-from chessAI.util.logging import DataLogger
+from chessAI.util.logging.factory import LoggerFactory
 
 
 class RandomWalkTrainingCampaign:
@@ -65,9 +65,6 @@ class RandomWalkTrainingCampaign:
             series_result = series.run()
             score = series_result['scores'][player_name]['total']
 
-            for data_loger in self.data_loggers:
-                data_loger.log(score, self.model_player.evaluator.get_parameters())
-
             if highest_score is None or score > highest_score:
                 highest_score = score
                 best_params = self.model_player.evaluator.get_parameters()
@@ -85,6 +82,9 @@ class RandomWalkTrainingCampaign:
                                                    self.side,
                                                    self.initial_board_fens,
                                                    self.n_rounds_series)
+
+        for data_loger in self.data_loggers:
+            data_loger.log(highest_score, best_params)
 
         return highest_score, best_params
 
@@ -104,8 +104,11 @@ class RandomWalkTrainingCampaign:
         max_abs_rel_change = schedule['max_abs_rel_change']
         initial_board_fens = schedule['initial_board_fens']
 
-        data_logger_params = schedule['logger']
-        data_loggers = DataLogger.create_data_logger(data_logger_params)
+        loggers_params = schedule['logger']
+        data_loggers = list()
+        for logger_params in loggers_params:
+            data_logger = LoggerFactory.create_evaluator(logger_params)
+            data_loggers.append(data_logger)
 
         rwtc = cls(model_player=model_player,
                    engine_player=engine_player,
